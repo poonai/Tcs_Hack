@@ -54,14 +54,25 @@ iris.Get("foodad/:place/:food",func (ctx *iris.Context)  {
    }
 })
 iris.Get("/weatherad",func (ctx *iris.Context)  {
-  humidity:=weather.GetWeather(ctx.URLParam("lat"),ctx.URLParam("lng"))
-  if humidity>70{
+  humidity,weather:=weather.GetWeather(ctx.URLParam("lat"),ctx.URLParam("lng"))
+  if weather=="Rain"{
+       ctx.JSON(200,scraper.GetProductList("rain"))
+  }else  if humidity>70{
     ctx.JSON(200,scraper.GetProductList("cotton tshirt"))
     //ctx.Write("Asdf")
   }else if humidity<70{
     ctx.JSON(200,scraper.GetProductList("trekking"))
   }
-
+})
+iris.Get("/workout",func (ctx *iris.Context)  {
+  switch ctx.URLParam("q") {
+  case "running":
+        ctx.JSON(200,scraper.GetProductList("shoes"))
+  case "weight":
+        ctx.JSON(200,scraper.GetProductList("protein"))
+  default :
+        ctx.JSON(200,scraper.GetProductList("gyms"))
+  }
 })
 iris.Listen(":8081")
 fmt.Println(weather.GetWeather("12.9165167","79.13249859999996"))
