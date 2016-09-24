@@ -4,14 +4,18 @@ import "github.com/PuerkitoBio/goquery"
 import "errors"
 import "strings"
 import "weather"
-import "fmt"
 import "scraper"
-//import "strconv"
+//hotel struct for location based advertisement
 type hotel struct {
   Name string `json:"name"`
   Address string `json:"address"`
 }
 
+/*
+@params food
+@params place
+returns url and places slices
+*/
 func HotelByFood(food string,place string)([]string,[]string,error){
   doc,err := goquery.NewDocument("https://www.zomato.com/"+place+"/restaurants?q="+food)
   if err != nil {
@@ -40,6 +44,10 @@ func HotelByFood(food string,place string)([]string,[]string,error){
   return <-urlch,<-resultch,nil
 }
 func main() {
+  /*food advertisement endpoint
+  @params place location
+  @params food food that he going to have
+  */
 iris.Get("foodad/:place/:food",func (ctx *iris.Context)  {
    hotelimg,hotelname,err:=HotelByFood(ctx.Param("food"),ctx.Param("place"))
    if err==nil {
@@ -53,6 +61,10 @@ iris.Get("foodad/:place/:food",func (ctx *iris.Context)  {
      ctx.Write("something went wrong")
    }
 })
+/*weather advertisement endpoint
+@queryParameter lat latitude
+@queryParameter lng longitude
+*/
 iris.Get("/weatherad",func (ctx *iris.Context)  {
   humidity,weather:=weather.GetWeather(ctx.URLParam("lat"),ctx.URLParam("lng"))
   if weather=="Rain"{
@@ -64,6 +76,10 @@ iris.Get("/weatherad",func (ctx *iris.Context)  {
     ctx.JSON(200,scraper.GetProductList("trekking"))
   }
 })
+/*
+workout route
+@queryParameter q type of workout that he doing
+*/
 iris.Get("/workout",func (ctx *iris.Context)  {
   switch ctx.URLParam("q") {
   case "running":
@@ -75,5 +91,4 @@ iris.Get("/workout",func (ctx *iris.Context)  {
   }
 })
 iris.Listen(":8081")
-fmt.Println(weather.GetWeather("12.9165167","79.13249859999996"))
 }

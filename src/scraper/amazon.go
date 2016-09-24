@@ -1,14 +1,21 @@
 package scraper
 import(
   "github.com/PuerkitoBio/goquery"
-  //"fmt"
-//  "github.com/Jeffail/gabs"
 )
+/*
+Products structure
+Name :-name of the product
+Image:-image url of the Product
+*/
 type Products struct{
   Name string `json:name`
   Image string `json:img`
   Url string `json:url`
 }
+/*
+get the product struct slices based on the query
+@params query search string
+*/
 func GetProductList(query string) []Products {
 doc,_:=goquery.NewDocument("https://www.snapdeal.com/search?keyword="+query)
 var Name,Image,Url [4]string
@@ -16,8 +23,8 @@ doc.Find(".product-title").Each(func (i int,Selection *goquery.Selection)  {
   if i<4{
     Name[i]=Selection.Text();
   }
- //fmt.Println(Selection.Text())
-})
+
+ })
 doc.Find("img.product-image").Each(func (i int,Selection *goquery.Selection)  {
   if i<4 {
     d,_:=Selection.Attr("src")

@@ -6,7 +6,11 @@ import(
 type Weather struct{
   Main string `json:main`
 }
-
+/*
+@params lat latitude
+@params lng longitude
+returns humidty,current weather location
+*/
 func GetWeather(lat,lng string)(float64,string){
  res,err:=grequests.Get("http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lng+"&APPID=f06e779ae27b1a8269f171f8372fc352",nil)
  if err!=nil{
